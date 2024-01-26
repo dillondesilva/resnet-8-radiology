@@ -19,9 +19,9 @@ class ResidualBlock(tf.Module):
 
         # Residual path
         x = tf.nn.conv2d(x, self.w1, strides=1, padding='SAME')
-        x = tf.nn.relu(x)
+        x = tf.nn.softmax(x)
         x = tf.nn.conv2d(x, self.w2, strides=1, padding='SAME')
-        x = tf.nn.relu(x)
+        x = tf.nn.softmax(x)
 
         # Adding skip connection with residual mapping
         x = x + x_skip
