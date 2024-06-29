@@ -34,7 +34,7 @@ class ResNet18(tf.Module):
     def __init__(self, n_classes):
         self._initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=None)
         self.w_conv = tf.Variable(self._initializer(shape=(1, 64, 3, 3)), dtype=tf.float32)
-        self.w_fc = tf.Variable(self._initializer(shape=(67500, n_classes)), dtype=tf.float32)
+        self.w_fc = tf.Variable(self._initializer(shape=(196608, n_classes)), dtype=tf.float32)
         self.residual_blocks = []  
         n_filters = 64 # Setting our initial number of filters
 
@@ -45,9 +45,7 @@ class ResNet18(tf.Module):
 
     def __call__(self, x):
         # First softmax input
-        print(f"Original x: {x}")
         x = x / 255
-        print(f"Normalized x: {x}")
         x = tf.nn.conv2d(x, self.w_conv, strides=1, padding="SAME")
         # Residual blocks training
         for rb in self.residual_blocks:
@@ -61,7 +59,6 @@ class ResNet18(tf.Module):
 cross_entropy_loss_fn = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
 def compute_loss(model, inputs, targets):
     predictions = model(inputs)
-    print(f"Predictions are {predictions}")
     loss = cross_entropy_loss_fn(targets, predictions)
     return loss
 
@@ -72,8 +69,6 @@ def train_step(model, inputs, targets, optimizer):
     with tf.GradientTape() as tape:
         loss = compute_loss(model, inputs, targets)
     gradients = tape.gradient(loss, model.trainable_variables)
-    print("GRADIENTS ARE")
-    print(gradients)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return loss
 
