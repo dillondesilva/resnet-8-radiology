@@ -32,18 +32,23 @@ def split_images(source_folder, train_folder, test_folder, train_ratio=0.8):
     print(f"Moved {len(train_files)} files to {train_folder}")
     print(f"Moved {len(test_files)} files to {test_folder}")
 
-# Example usage:
+
+source_folder = './Data/glioma_tumor'
+train_folder = './Data/glioma_tumor/train'
+split_folder = './Data/glioma_tumor/test'
+split_images(source_folder, train_folder, split_folder, train_ratio=0.9)
+
 source_folder = './Data/meningioma_tumor'
 train_folder = './Data/meningioma_tumor/train'
 split_folder = './Data/meningioma_tumor/test'
-split_images(source_folder, train_folder, split_folder)
+split_images(source_folder, train_folder, split_folder, train_ratio=0.9)
 
 source_folder = './Data/normal'
 train_folder = './Data/normal/train'
 split_folder = './Data/normal/test'
-split_images(source_folder, train_folder, split_folder)
+split_images(source_folder, train_folder, split_folder, train_ratio=0.9)
 
 source_folder = './Data/pituitary_tumor'
 train_folder = './Data/pituitary_tumor/train'
-split_folder = './Data/pituitarya_tumor/test'
-split_images(source_folder, train_folder, split_folder)
+split_folder = './Data/pituitary_tumor/test'
+split_images(source_folder, train_folder, split_folder, train_ratio=0.9)

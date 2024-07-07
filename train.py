@@ -1,4 +1,4 @@
-from resnet18 import *
+from resnet8 import *
 from tqdm import tqdm
 
 import tensorflow_datasets as tfds
@@ -16,6 +16,7 @@ argparser = argparse.ArgumentParser(
 
 argparser.add_argument('name')
 argparser.add_argument('epochs')
+argparser.add_argument('--last-checkpoint')
 
 # Parsing model name arguments and number of epochs
 args = argparser.parse_args()
@@ -30,17 +31,28 @@ else:
     print(f"Directory '{model_name}' already exists.")
 
 # Load our data for training
-builder = tfds.ImageFolder('./Data/')
+builder = tfds.ImageFolder('./BrainScanData/')
 print(builder.info)
-ds = builder.as_dataset(split='train', shuffle_files=True).take(5)
-my_resnet = ResNet18(n_classes=4)
+ds = builder.as_dataset(split='train', shuffle_files=True)
+tfds.show_examples(ds, builder.info)
+# my_resnet = ResNet8(n_classes=4) Uncomment when doing multiclassification
+n_classes = 4
+my_resnet = ResNet8(n_classes=n_classes)
+print(f"Number of layers: {len(my_resnet.trainable_variables)}")
 input = tf.random.uniform((1, 64, 64, 3))
 target = tf.Variable([0, 0, 1, 0], dtype=tf.float32)
+optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=0.0001)
+print(optimizer.learning_rate.numpy())
 
-optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+if args.last_checkpoint:
+    print(f"LOADING CHECKPOINT: {args.last_checkpoint}")
+    final_model_checkpoint = tf.train.Checkpoint(model=my_resnet)
+    latest_checkpoint = tf.train.latest_checkpoint(args.last_checkpoint)
+    final_model_checkpoint.restore(latest_checkpoint)
+    print("CHECKPOINT LOADED")
 
-def validate_accuracy(n_instances, accuracies):
-    test_ds = builder.as_dataset(split='test', shuffle_files=True).take(n_instances)
+def validate_accuracy(accuracies):
+    test_ds = builder.as_dataset(split='test', shuffle_files=True)
     true_positives = 0
     n_predictions = 0
     for item in test_ds:
@@ -69,14 +81,14 @@ for epoch in tqdm(range(epochs)):
     for idx, item in tqdm(enumerate(ds)):
         image = tf.cast(item["image"], dtype=tf.float32)
         image = tf.reshape(image, shape=((1,) + image.shape))
-        label = tf.reshape(tf.one_hot(item["label"], 4), shape=(1,4))
+        label = tf.reshape(tf.one_hot(item["label"], n_classes), shape=(1,n_classes))
         label = tf.cast(label, dtype=tf.float32)
         loss = train_step(my_resnet, image, label, optimizer)
         epoch_loss_count += loss.numpy()
 
     losses.append(epoch_loss_count / len(ds))
     # Ideally this should be a percentage but its roughly 33% of the test set
-    validate_accuracy(200, accuracies)
+    validate_accuracy(accuracies)
 
     # Create a checkpoint
     checkpoint = tf.train.Checkpoint(model=my_resnet)

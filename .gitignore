@@ -1,3 +1,8 @@
 Data
 .trunk
 __pycache__
+.DS_Store
+BrainScanData
+training_loss.csv
+resnet18.py
+epoch-training-metrics

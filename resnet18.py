@@ -19,12 +19,13 @@ class ResidualBlock(tf.Module):
 
         # Residual path
         x = tf.nn.conv2d(x, self.w1, strides=1, padding='SAME')
-        x = tf.nn.softmax(x)
+        x = tf.nn.relu(x)
         x = tf.nn.conv2d(x, self.w2, strides=1, padding='SAME')
-        x = tf.nn.softmax(x)
+        x = tf.nn.relu(x)
 
         # Adding skip connection with residual mapping
         x = x + x_skip
+        x = tf.nn.relu(x)
         return x
 
 class ResNet18(tf.Module):
@@ -38,7 +39,7 @@ class ResNet18(tf.Module):
         self.residual_blocks = []  
         n_filters = 64 # Setting our initial number of filters
 
-        for i in range(8):
+        for i in range(18):
             if i % 2 == 0 and i != 0:
                 n_filters = n_filters * 2
                 self.residual_blocks.append(ResidualBlock(n_filters=n_filters))

@@ -1,0 +1,2 @@
+model_checkpoint_path: "resnet18-resnet-8-brain-tumor-classification-5-epoch-epoch-4-1"
+all_model_checkpoint_paths: "resnet18-resnet-8-brain-tumor-classification-5-epoch-epoch-4-1"
