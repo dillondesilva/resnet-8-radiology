@@ -35,7 +35,6 @@ builder = tfds.ImageFolder('./BrainScanData/')
 print(builder.info)
 ds = builder.as_dataset(split='train', shuffle_files=True)
 tfds.show_examples(ds, builder.info)
-# my_resnet = ResNet8(n_classes=4) Uncomment when doing multiclassification
 n_classes = 4
 my_resnet = ResNet8(n_classes=n_classes)
 print(f"Number of layers: {len(my_resnet.trainable_variables)}")
@@ -106,7 +105,7 @@ training_metrics_df = pd.DataFrame(training_metrics)
 training_metrics_df.to_csv(f"{model_name}/{model_name}-training-metrics.csv")
 
 plt.style.use('ggplot')
-plt.title("Training Loss Over Time")
+plt.title("Training Loss")
 plt.ylabel("Cross Entropy Loss")
 plt.xlabel("Epoch")
 plt.plot(epoch_labels, losses)
