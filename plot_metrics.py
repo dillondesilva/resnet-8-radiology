@@ -9,7 +9,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
 
 # Plot accuracy
 ax1.plot(df['Epochs'], df['Accuracy'], marker='o', linewidth=2, markersize=8)
-ax1.set_title('Training Accuracy over Epochs', fontsize=12, pad=15)
+ax1.set_title('Validation Accuracy', fontsize=12, pad=15)
 ax1.set_xlabel('Epochs')
 ax1.set_ylabel('Accuracy')
 ax1.grid(True, linestyle='--', alpha=0.7)
@@ -18,7 +18,7 @@ ax1.set_xticks([1, 2, 3, 4, 5])
 
 # Plot loss
 ax2.plot(df['Epochs'], df['Loss'], marker='o', color='red', linewidth=2, markersize=8)
-ax2.set_title('Training Loss over Epochs', fontsize=12, pad=15)
+ax2.set_title('Training Loss', fontsize=12, pad=15)
 ax2.set_xlabel('Epochs')
 ax2.set_ylabel('Loss')
 ax2.grid(True, linestyle='--', alpha=0.7)
